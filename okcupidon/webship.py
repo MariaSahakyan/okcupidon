@@ -1,4 +1,6 @@
 import os
+from urllib.parse import urlparse
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
@@ -176,6 +178,11 @@ class WebDrive:
         except (selexcept.TimeoutException, selexcept.NoSuchElementException):
             self.driver.get(self.website+'/doubletake')
 
+    def get_profile_id(self):
+        if '/profile/' in self.driver.current_url:
+            return urlparse(self.driver.current_url).path.rpartition('/')[-1]
+        return ''
+
     def acquire_data(self, wait_time=4):
         """The main profile scraper
 
@@ -183,30 +190,33 @@ class WebDrive:
         and returns it as a dict"""
 
         def open_essays():
+            xpath_more_text = '//button[@class="profile-essays-expander"]'
             WebDriverWait(self.driver, wait_time*2).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="main_content"]/div[3]/div[1]/div[1]/div/button/span')))
+                EC.presence_of_element_located((By.XPATH, xpath_more_text))
+            )
             time.sleep(wait_time)
-            self.driver.find_element_by_xpath('//*[@id="main_content"]/div[3]/div[1]/div[1]/div/button/span').click()
+            self.driver.find_element_by_xpath(xpath_more_text).click()
+            #self.driver.find_element_by_xpath('//*[@id="main_content"]/div[3]/div[1]/div[1]/div/button/span').click()
 
         # Open the full essays
         try:
             open_essays()
         except (selexcept.NoSuchElementException, selexcept.TimeoutException):
-                time.sleep(wait_time)
-                open_essays()
+                # time.sleep(wait_time)
+                # open_essays()
+                print('No More button found ' + self.driver.current_url)
 
         # Parse the profile
         try :
             time.sleep(wait_time)
-            profile_id = self.driver.current_url[32:51]
+            profile_id = self.get_profile_id()
             data = parse_profile(profile_id=profile_id, html_page=self.driver.page_source)
 
         except IndexError :
             if self.verbose :
-                print("Index Error " + self.driver.current_url)
+                print("Index Error when fetching profile id from the url " + self.driver.current_url)
             time.sleep(wait_time+4)
-            profile_id = self.driver.current_url[32:51]
+            profile_id = self.get_profile_id()
 
 
             data = parse_profile(profile_id=profile_id, html_page=self.driver.page_source)

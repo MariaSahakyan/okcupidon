@@ -1,8 +1,49 @@
+from urllib.request import urlretrieve
+
 from bs4 import BeautifulSoup
+import os
+from urllib.parse import urlparse
+from urllib.parse import urlunparse
+
+
+def mod_pic_url(src):
+    url = urlparse(src)
+    path_parts = url.path.split('/')
+    path_parts[4] = path_parts[7]
+    path_parts[5] = path_parts[7]
+    path_parts[6] = path_parts[7]
+    return str(urlunparse((url.scheme, url.hostname, '/'.join(path_parts), None, '', '')))
+
+def save_profile_images(profile_id, soup):
+    for profile_thumb_div in soup.find_all('div', {'class': 'profile-thumb'}):
+        i = 0
+        for img in profile_thumb_div.find_all('img'):
+            src = ""
+            if img.has_attr('data-src'):
+                src = img['data-src']
+            elif img.has_attr('src'):
+                src = img['src']
+            else:
+                print('Empty src or data-src tag for ' + profile_id)
+
+            if src != '':
+                try:
+                    outpath = 'images/' + profile_id + '/'
+                    os.makedirs(outpath, exist_ok=True)
+                    urlretrieve(mod_pic_url(src), outpath + str(i) + ".jpg")
+                    i = i + 1
+                except Exception as e:
+                    print(e)
+
+
+
 
 def parse_profile(profile_id, html_page):
     """This function parses the html page, looking for profile data and returns a dict """
     soup = BeautifulSoup(html_page, "html.parser")
+
+    save_profile_images(profile_id, soup)
+
     data_structure = {
         'age': ['span', {'class': 'profile-basics-asl-age'}],
         'location': ['span', {'class': 'profile-basics-asl-location'}],
@@ -75,5 +116,6 @@ def parse_profile(profile_id, html_page):
             if section.find(element, css_class):
                 parsed_data['details'][detail] = section.find(element, css_class).\
                 find('div', 'matchprofile-details-text').text
+
 
     return parsed_data
