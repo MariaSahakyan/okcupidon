@@ -169,12 +169,15 @@ class WebDrive:
     def get_current_url(self):
         return self.driver.current_url
 
-    def get_to_full_profile(self, wait_time=4):
+    def get_to_full_profile(self, wait_time=10):
         try:
             WebDriverWait(self.driver, wait_time).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'cardsummary')))
             time.sleep(wait_time)
             self.driver.find_element_by_link_text('View Profile').click()
+
+            #self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#main_content > div.qm > div > div.qm-content-stackholder > div > div > div > div > div.qmcard-top > div.cardsummary > span.cardsummary-item.cardsummary-profile-link > a' ))))
+
         except (selexcept.TimeoutException, selexcept.NoSuchElementException):
             self.driver.get(self.website+'/doubletake')
 
@@ -225,19 +228,144 @@ class WebDrive:
         return data
 
     def new_profile(self, decision):
+
         """Brings the driver to a new profile """
-        WebDriverWait(self.driver, 3).until(
-            EC.presence_of_element_located((By.ID, "like-button")))
+        WebDriverWait(self.driver, 4).until(
+            #EC.presence_of_element_located((By.ID, "like-button")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "#like-button > div")))
         time.sleep(2)
+
         if decision:
-            self.driver.\
-                find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]').\
+            self.driver. \
+                find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]'). \
                 click()
             self.driver.get('https://www.okcupid.com/doubletake')
         else:
-            self.driver.\
-            find_element_by_xpath("/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[1]").\
-            click()
+            self.driver. \
+                find_element_by_xpath("/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[1]"). \
+                click()
+
+            #self.driver.find_element_by_xpath('//*[@id="main_content"]/div[3]/div[1]/div[1]/div/button/span').click()
+
+        # Open the full essays
+
+
+        #if decision:
+
+            # xpath_pass_text = '//button[@class="pill-button pass-pill-button profile-pill-buttons-button"]'
+            # WebDriverWait(self.driver, 10).until(
+            #     EC.presence_of_element_located((By.XPATH, xpath_pass_text))
+            # )
+            # time.sleep(5)
+            # self.driver.find_element_by_xpath(xpath_pass_text).click()
+            #####
+            #self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]'))))
+            ###
+            #self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#pass-button > div'))))
+            #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#pass-button > div'))).click()
+            ###
+            #self.driver.find_element_by_id('pass-button').click()
+            ###
+            #self.driver.find_element_by_css_selector('#pass-button > div').click()
+            ###
+            #pass-button
+            # chrome_options = webdriver.ChromeOptions()
+            # chrome_options.add_experimental_option('useAutomationExtension', False)
+            # browser = webdriver.Chrome('./chromedriver', options=chrome_options)
+            # pass_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'pill-button pass-pill-button profile-pill-buttons-button')))
+            # pass_button.click()
+            ###
+            #self.driver.find_element_by_xpath('//button[@class="pill-button pass-pill-button profile-pill-buttons-button"]').click()
+            # xpath_pass_text = '//button[@class="pill-button pass-pill-button profile-pill-buttons-button"]'
+            # WebDriverWait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'pill-button pass-pill-button profile-pill-buttons-button')))
+            # self.driver.find_element_by_xpath(xpath_pass_text).click()
+            ###
+            # global str
+            # pass_botton_str=('pass-pill-button-inner')
+            # str(pass_botton_str)
+            ###
+            # xpath_pass_text = '//button[@class="pass-pill-button-inner"]'
+            # WebDriverWait(self.driver).until(EC.presence_of_element_located((By.CLASS_NAME, xpath_pass_text)))
+            # self.driver.find_element_by_xpath(xpath_pass_text).click()
+            ###
+
+            #self.driver.find_element(By.CLASS_NAME(pass_botton_str)).text.click()
+
+            #xpath_pass_text = '//button[@class="pill-button pass-pill-button profile-pill-buttons-button"]'
+            #self.driver.find_element_by_xpath(xpath_pass_text).click()
+
+
+            #self.driver.find_element_by_id('pass-button').click()
+
+            ###
+            # self.driver. \
+            #     find_element_by_id('pass-button'). \
+            #     find_element_by_class_name('pass-button'). \
+            #     click()
+            #     # find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]').\
+            #     # find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]').\
+            #     # click()
+            # self.driver.get('https://www.okcupid.com/doubletake')
+
+        #else:
+
+            # xpath_like_text = '//button[@class="pill-button likes-pill-button profile-pill-buttons-button"]'
+            # WebDriverWait(self.driver, 10).until(
+            #     EC.presence_of_element_located((By.XPATH, xpath_like_text))
+            # )
+            # time.sleep(5)
+            # self.driver.find_element_by_xpath(xpath_like_text).click()
+            #####
+
+            #self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[1]'))))
+            ###
+            #self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#like-button > div'))))
+            #WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#like-button > div'))).click()
+            ###
+            #self.driver.find_element_by_id('like-button').click()
+            ###
+            #self.driver.find_element_by_css_selector('#like-button > div').click()
+            ###
+            # chrome_options = webdriver.ChromeOptions()
+            # chrome_options.add_experimental_option('useAutomationExtension', False)
+            # browser = webdriver.Chrome('./chromedriver', options=chrome_options)
+            # like_button = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'pill-button likes-pill-button profile-pill-buttons-button')))
+            # like_button.click()
+            ###
+            #self.driver.find_element_by_xpath('//button[@class="pill-button likes-pill-button profile-pill-buttons-button"]').click()
+            # xpath_like_text = '//button[@class="pill-button likes-pill-button profile-pill-buttons-button"]'
+            # WebDriverWait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'pill-button likes-pill-button profile-pill-buttons-button')))
+            # self.driver.find_element_by_xpath(xpath_like_text).click()
+            ####
+            # xpath_like_text = '//button[@class="like-pill-button-inner"]'
+            # WebDriverWait(self.driver).until(EC.presence_of_element_located((By.CLASS_NAME, xpath_like_text))                               )
+            # self.driver.find_element_by_xpath(xpath_like_text).click()
+            ####
+            # like_botton_str=('likes-pill-button-inner')
+            # str(like_botton_str)
+            #
+            # self.driver.find_element(By.CLASS_NAME(like_botton_str)).text.click()
+
+            #xpath_like_text = '//button[@class="pill-button likes-pill-button profile-pill-buttons-button"]'
+
+            #self.driver.find_element_by_xpath(xpath_like_text).click()
+
+            #self.driver.find_element_by_id('like-button').click()
+            ###
+
+            # self.driver.\
+            # find_element_by_css_selector('#like-button > div').\
+            # click()
+            # self.driver. \
+            #     find_element_by_id('like-button'). \
+            #     find_element_by_id('like-button'). \
+            #     click()
+            # find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]').\
+            # find_element_by_xpath('/html/body/div[1]/main/div[1]/div[2]/div/div/div[3]/span/div/button[2]').\
+            # click()
+            #self.driver.get('https://www.okcupid.com/doubletake')
+
+
 
     def debug(self):
         self.take_screenshot()

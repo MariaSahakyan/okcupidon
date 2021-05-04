@@ -139,7 +139,7 @@ def main():
                 # Getting to the profile
                 try:
                     my_scrapper.get_to_full_profile(wait_time=4+2*fuse)
-                    time.sleep(5+fuse)
+                    time.sleep(4+fuse)
                     # Acquiring data
                     decision = bool(random.randint(0, 1))
 
